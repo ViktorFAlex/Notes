@@ -1,0 +1,6 @@
+.listBarBtn:focus {
+  outline: none !important;
+}
+.listBarBtn:hover {
+  background-color: '#fff' !important;
+}
