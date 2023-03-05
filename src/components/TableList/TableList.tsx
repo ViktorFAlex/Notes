@@ -1,9 +1,7 @@
 import { Typography, Divider, Stack } from '@mui/material';
-import useAppApiContext from '../../hooks/useAppApiContext';
 import useThemeContext from '../../hooks/useThemeContext';
 import { Notes } from '../../types/interfaces';
 import EmptyList from './EmptyList/EmptyList';
-import { useEffect, useState } from 'react';
 import TableListItem from './TableListItem/TableListItem';
 
 const TableList = (): JSX.Element => {

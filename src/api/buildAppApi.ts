@@ -1,4 +1,4 @@
-import { ApiCallback, Notes } from '../types/interfaces';
+import { Notes } from '../types/interfaces';
 
 const buildAppApi = () => {
   const storeName = 'notes';
@@ -14,20 +14,19 @@ const buildAppApi = () => {
         console.log('dbCreated');
       }
     };
-    openRequest.onsuccess = () => {
-      const db = openRequest.result;
-    };
   };
 
   const putNote = (note: Notes) => {
-    const openRequest = indexedDB.open(dbName, version);
-    openRequest.onsuccess = () => {
-      const db = openRequest.result;
-      const request = db.transaction(storeName, 'readwrite').objectStore(storeName).put(note);
-      request.onsuccess = () => {
-        console.log('note added', request.result);
+    return new Promise<IDBValidKey>((resolve) => {
+      const openRequest = indexedDB.open(dbName, version);
+      openRequest.onsuccess = () => {
+        const db = openRequest.result;
+        const request = db.transaction(storeName, 'readwrite').objectStore(storeName).put(note);
+        request.onsuccess = () => {
+          resolve(request.result);
+        };
       };
-    };
+    });
   };
 
   const deleteNote = (id: number) => {

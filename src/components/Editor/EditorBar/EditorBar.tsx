@@ -1,38 +1,53 @@
-import { AppBar, Toolbar, IconButton, InputBase, Box, Typography } from '@mui/material';
-import { useContext } from 'react';
+import { AppBar, Toolbar, InputBase, Box } from '@mui/material';
 import NoteAltOutlinedIcon from '@mui/icons-material/NoteAltOutlined';
 import TextFormatOutlinedIcon from '@mui/icons-material/TextFormatOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import StyledButton from '../../StyledButton/StyledButton';
-import { padding } from '@mui/system';
 import useAppApiContext from '../../../hooks/useAppApiContext';
+import useThemeContext from '../../../hooks/useThemeContext';
+import useTextContext from '../../../hooks/useTextContext';
+import { Notes } from '../../../types/interfaces';
+import { EditorFieldProps } from '../../../types/types';
 
-const EditorBar = (): JSX.Element => {
-  const apiContext = useAppApiContext();
-  const { putNote, getNotes } = apiContext;
-  const note = {
-    title: 'foldy',
+const EditorBar = ({ setNote }: EditorFieldProps): JSX.Element => {
+  const { items, currentNote } = useThemeContext();
+  const { putNote } = useAppApiContext();
+  const { makeItalic, textFormat } = useTextContext();
+  const currentText = items.find((item) => item.id === currentNote) as Notes;
+  const noted = {
     date: new Date(),
-    message: 't<b>this is bold</b>est',
+    value: '## Vasya loves vasya\nPetya is not\nHe love Maria',
   };
 
   const handleClick = () => {
-    putNote(note);
+    putNote(noted);
   };
-  const get = () => {
-    getNotes();
+
+  const handleFormatting = () => {
+    const { id, value } = currentText;
+    const italicized = makeItalic(value);
+    console.log(value, italicized);
+    const date = new Date();
+    const newNote = { id, value: italicized, date };
+    putNote(newNote);
+    setNote({ value: italicized, date });
   };
+
   return (
     <AppBar
       elevation={0}
       component='div'
-      sx={{ backgroundColor: '#1e2323', position: 'relative', height: '10%' }}
+      sx={{ backgroundColor: '#1e2323', position: 'sticky', height: '10%' }}
     >
       <Toolbar disableGutters sx={{ alignItems: 'center' }}>
         <StyledButton sx={{ marginLeft: '10px' }} onClick={handleClick}>
           <NoteAltOutlinedIcon sx={{ color: '#8f8f94', width: '30px' }} />
         </StyledButton>
-        <StyledButton sx={{ marginLeft: '10%' }} onClick={get}>
+        <StyledButton
+          sx={{ marginLeft: '10%' }}
+          onClick={handleFormatting}
+          disabled={textFormat.italic}
+        >
           <TextFormatOutlinedIcon sx={{ color: '#8f8f94', width: '30px' }} />
         </StyledButton>
         <Box

@@ -1,5 +1,5 @@
 import { ListItemButton, ListItemText } from '@mui/material';
-import { Notes, TableListItemProps } from '../../../types/interfaces';
+import { Notes } from '../../../types/interfaces';
 import { styled } from '@mui/material/styles';
 import useThemeContext from '../../../hooks/useThemeContext';
 
@@ -22,13 +22,9 @@ const StyledListItem = styled(ListItemText)`
 
 const TableListItem = ({ item }: Props) => {
   const { currentNote, setCurrentNote } = useThemeContext();
-  const getSubtitle = (html: string) => {
-    const parser = new DOMParser();
-    const response = parser.parseFromString(html, 'text/html');
-    const body = response.querySelector('body');
-    return body?.textContent;
-  };
-  const subtitle = getSubtitle(item.message);
+
+  const { value } = item;
+  const [title, ...body] = value.split('\n');
   return (
     <ListItemButton
       selected={item.id === currentNote}
@@ -37,7 +33,7 @@ const TableListItem = ({ item }: Props) => {
         setCurrentNote(item?.id ?? 0);
       }}
     >
-      <StyledListItem primary={item.title} secondary={subtitle} />
+      <StyledListItem primary={title} secondary={body.join('\n')} />
     </ListItemButton>
   );
 };
